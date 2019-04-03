@@ -8,7 +8,8 @@ const movies = require('./store')
 
 const app = express()
 
-app.use(morgan('dev'))
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
+app.use(morgan(morganSetting))
 app.use(cors())
 app.use(helmet())
 
@@ -29,7 +30,6 @@ app.get('/movie',(req,res)=>{
     let ans=movies;
     if(genre!==undefined){
         ans = ans.filter(i => i.genre.toUpperCase().includes(genre.toUpperCase())); 
-        console.log(ans);
     }
     if(country!==undefined){
         ans = ans.filter(i => i.country.toUpperCase().includes(country.toUpperCase()));   
@@ -40,10 +40,19 @@ app.get('/movie',(req,res)=>{
     res.json(ans)
 });
 
+app.use((error, req, res, next) => {
+    let response
+    if (process.env.NODE_ENV === 'production') {
+      response = { error: { message: 'server error' }}
+    } else {
+      response = { error }
+    }
+    res.status(500).json(response)
+  })
+  
 
-
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`)
+  //console.log(`Server listening at http://localhost:${PORT}`)
 })

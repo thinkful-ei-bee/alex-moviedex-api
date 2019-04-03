@@ -13,6 +13,9 @@
     "url": "git+https://github.com/thinkful-ei-bee/alex-moviedex-api.git"
   },
   "keywords": [],
+  "engines": {
+    "node":"11.10.0"
+  },
   "author": "",
   "license": "ISC",
   "bugs": {
